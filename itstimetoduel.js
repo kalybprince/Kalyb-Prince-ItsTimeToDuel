@@ -1,5 +1,3 @@
-// Note to self:
-// Left off without testing Effect cards
 
 class Card {
     constructor(name, cost) {
@@ -18,7 +16,8 @@ class Unit extends Card {
         target.res -= this.power;
     }
     stats() {
-        console.log([this.name, this.cost, this.power, this.res])
+        // display unit stats
+        console.log(`name: ${this.name}\n cost: ${this.cost}\n power: ${this.power}\n res: ${this.res}`)
     }
 }
 
@@ -28,9 +27,24 @@ class Effect extends Card {
         this.magnitude = magnitude;
         this.stat = stat;
     }
-    play( target ) {
+
+    text() {
+        // print text of effect
+        if (this.magnitude > 0) {
+            console.log(`Increase targets ${this.stat} by ${this.magnitude}`);
+        } else {
+            console.log(`Decrease target's ${this.stat} by ${this.magnitude}`);
+        }
+    }
+
+    stats() {
+        // display effect stats
+        console.log([this.name, this.cost, this.magnitude, this.stat]);
+    }
+
+    play(target) {
         // can only target units
-        if( target instanceof Unit ) {
+        if(target instanceof Unit) {
             // if magnitude is positive
             if (this.magnitude > 0) {
                 // determine stat to increase
@@ -48,27 +62,28 @@ class Effect extends Card {
                 }
             }
         } else {
-            throw new Error( "Target must be a unit!" );
+            throw new Error("Target must be a unit!");
         }
-    }
-    text() {
-        if (this.magnitude > 0) {
-            console.log(`Increase targets ${this.stat} by ${this.magnitude}`);
-        } else {
-            console.log(`Decrease target's ${this.stat} by ${this.magnitude}`);
-        }
-    }
-    stats() {
-        console.log([this.name, this.cost, this.magnitude, this.stat]);
     }
 }
 
+// create red_ninja and apply hard algo to ninja
 let red_ninja = new Unit("Red Belt Ninja", 3, 3, 4);
-let black_ninja = new Unit("Black Belt Ninja", 4, 5, 4);
-
-let hard_algo = new Effect("Hard Algorithm", 2, -3, "power");
-hard_algo.text();
-
-red_ninja.stats();
+let hard_algo = new Effect("Hard Algorithm", 2, 3, "power");
 hard_algo.play(red_ninja);
+
+// create black_ninja and apply uh_promise
+let black_ninja = new Unit("Black Belt Ninja", 4, 5, 4);
+let uh_promise = new Effect("Unhandled Promise Rejection", 1, -2, "resilience");
+uh_promise.play(red_ninja);
+
+// create pair_programming effect and play it on red_ninja
+let pair_programming = new Effect("Pair Programming", 3, 2, "power");
+pair_programming.play(red_ninja);
+
+// red_ninja attacks black_ninja
+red_ninja.attack(black_ninja);
+
+// show both units' stats
 red_ninja.stats();
+black_ninja.stats();
